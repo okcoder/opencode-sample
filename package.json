@@ -1,0 +1,22 @@
+{
+  "name": "opencode-sample",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "volta": {
+    "node": "24.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "electron": "^40.2.1",
+    "typescript": "^5.9.3"
+  }
+}

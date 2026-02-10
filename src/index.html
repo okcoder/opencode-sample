@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electron App</title>
+</head>
+<body>
+  <h1>Hello, Electron!</h1>
+  <p>Running on: <span id="platform"></span></p>
+  <script>
+    document.getElementById('platform').textContent = window.electronAPI.platform;
+  </script>
+</body>
+</html>
