@@ -8,6 +8,43 @@ Electron を使用したデスクトップアプリケーションのテンプ�
 
 ## プロジェクト構成
 
+```mermaid
+graph TD
+    Root[opencode-sample] --> src[src/]
+    Root --> specs[specs/]
+    Root --> github[.github/]
+    Root --> config[設定ファイル]
+
+    src --> main[main.ts<br/>Electron Main Process]
+    src --> preload[preload.ts<br/>Security Bridge]
+    src --> html[index.html<br/>Renderer]
+    src --> test[sample.test.ts<br/>Jest Test]
+
+    specs --> functional[functional/<br/>機能仕様]
+    specs --> technical[technical/<br/>技術仕様]
+    specs --> api[api/<br/>API仕様]
+
+    functional --> func1[system_functional.md]
+    technical --> tech1[architecture.md]
+    api --> api1[references.md]
+
+    github --> workflows[workflows/]
+    workflows --> opencode[opencode.yml]
+    workflows --> buildtest[build-test.yml]
+```
+
+### フォルダ構成
+
+| フォルダ | 説明 |
+|---------|------|
+| `src/` | ソースコード（Electron Main/Preload/Renderer） |
+| `specs/functional/` | 機能仕様書 |
+| `specs/technical/` | 技術仕様書 |
+| `specs/api/` | API仕様書 |
+| `.github/workflows/` | CI/CD ワークフロー |
+| `dist/` | TypeScript コンパイル出力 |
+| `dist-electron/` | パッケージング済みアプリ |
+
 ```
 .
 ├── src/
@@ -15,6 +52,13 @@ Electron を使用したデスクトップアプリケーションのテンプ�
 │   ├── preload.ts    (Preload script - セキュリティ境界のbridge)
 │   ├── index.html    (HTML entry point - レンダラープロセス)
 │   └── sample.test.ts (Jest テスト)
+├── specs/
+│   ├── functional/   (機能仕様)
+│   │   └── system_functional.md
+│   ├── technical/    (技術仕様)
+│   │   └── architecture.md
+│   └── api/          (API仕様)
+│       └── references.md
 ├── dist/             (TypeScript コンパイル後のJavaScript)
 ├── dist-electron/    (パッケージング済みアプリケーション)
 ├── .github/workflows/
