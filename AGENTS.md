@@ -1,60 +1,42 @@
-# AGENTS.md - OpenCode 用設定ファイル
+# AGENTS.md - OpenCode 運用ガイド
 
-## プロジェクト構成図
+## 目的
+このリポジトリで OpenCode エージェントが作業する際の、共通ルールと最短の作業手順をまとめる。
 
-```mermaid
-graph TD
-    Root[opencode-sample] --> src[src/]
-    Root --> specs[specs/]
-    Root --> github[.github/]
-    Root --> config[設定ファイル]
+## 対象範囲
+- 対象: 本リポジトリ内のコード/ドキュメント/CI設定
+- 対象外: 外部サービスの運用、プロダクションの操作、機密情報の取り扱い
 
-    src --> main[main.ts<br/>Electron Main Process]
-    src --> preload[preload.ts<br/>Security Bridge]
-    src --> html[index.html<br/>Renderer]
-    src --> test[sample.test.ts<br/>Jest Test]
+## 事実（リポジトリに存在する情報）
+### 構成（主要ディレクトリ）
+| パス | 説明 |
+| --- | --- |
+| `src/` | Electron アプリのソース |
+| `specs/functional/` | 機能仕様 |
+| `specs/technical/` | 技術仕様 |
+| `specs/api/` | API 仕様 |
+| `.github/workflows/` | CI/CD |
 
-    specs --> functional[functional/<br/>機能仕様]
-    specs --> technical[technical/<br/>技術仕様]
-    specs --> api[api/<br/>API仕様]
-
-    functional --> func1[system_functional.md]
-    technical --> tech1[architecture.md]
-    api --> api1[references.md]
-
-    github --> workflows[workflows/]
-    workflows --> opencode[opencode.yml]
-    workflows --> buildtest[build-test.yml]
-```
-
-## フォルダ構成
-
-| フォルダ | 説明 |
-|---------|------|
-| `src/` | ソースコード（Electron Main/Preload/Renderer） |
-| `specs/` | OpenSpec 仕様に基づく仕様書群 |
-| `specs/functional/` | 機能仕様書 |
-| `specs/technical/` | 技術仕様書 |
-| `specs/api/` | API仕様書 |
-| `.github/workflows/` | CI/CD ワークフロー |
-| `dist/` | TypeScript コンパイル出力 |
-| `dist-electron/` | パッケージング済みアプリ |
-
-## タスク実行コマンド
-
+### 主要コマンド（package.json と一致）
 ```bash
-# 依存関係インストール
 npm install
-
-# 開発サーバー起動
 npm start
-
-# ビルド
 npm run build
-
-# テスト実行
 npm test
-
-# パッケージング
 npm run build:package
 ```
+
+## 方針（作業スタイル）
+- 変更理由が不明確な場合は、まず既存の実装/README/仕様を確認する
+- 仕様は「事実」と「想定」を混在させない（根拠がない記述は “想定” と明記）
+- コード変更時は関連する README / specs の整合性を確認する
+- 自動生成物（`dist/`、`dist-electron/`）の修正は行わない
+
+## 作業時の注意
+- 機密情報（APIキー等）をコミットしない
+- 破壊的操作（強制push、reset/checkout -- など）は行わない
+- テストやビルドは必要時にのみ実行（CIで失敗した場合は再現優先）
+
+## 更新ルール
+- 仕様/構成/コマンドに変更があった場合は AGENTS.md も更新する
+- レビュー時に「AGENTS.md の更新要否」を確認する
