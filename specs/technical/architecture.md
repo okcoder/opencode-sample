@@ -85,13 +85,15 @@ src/
 ```typescript
 interface CalendarAdapter {
   provider: CalendarProvider;
-  authenticate(): Promise<AuthResult>;
+  setCalendarEmail(email: string): void;
   fetchEvents(date: Date): Promise<CalendarEvent[]>;
-  getAuthStatus(): AuthStatus;
+  getStatus(): AdapterStatus;
 }
 ```
 
 **責務**: 各カレンダーProviderへの統一アクセスInterface、提供者固有の実装を隠蔽
+
+> **注**: 公開URLembed形式のため、OAuth認証は不要
 
 ### 3.2 CalendarManager
 
@@ -103,15 +105,15 @@ interface CalendarAdapter {
 ### 3.3 GoogleCalendarAdapter
 
 **責務**:
-- Google Calendar API / OAuth認証
-- イベント取得（Google固有のconferenceData解析）
+- Google Calendar 公開URL（embed形式）からのイベント取得
+- イベントデータのパース（Google固有のconferenceData解析）
 - Google Meet/Zoom/Teamsリンク抽出
 
 ### 3.4 OutlookCalendarAdapter
 
 **責務**:
-- Microsoft Graph API / OAuth認証
-- イベント取得（Outlook固有のonlineMeeting解析）
+- Outlook Calendar 公開URL（embed形式）からのイベント取得
+- イベントデータのパース（Outlook固有のonlineMeeting解析）
 - Teams Meetingリンク抽出
 
 ### 3.5 NotificationService
@@ -132,7 +134,9 @@ interface CalendarAdapter {
 
 ## 4. 技術制約
 
-- カレンダーAPIに依存しないクライアントサイド実装（Webスクレイピング）
+- カレンダーAPIに依存しないクライアントサイド実装（公開URLのEmbed表示によるイベント取得）
+  - Google Calendar: `https://calendar.google.com/calendar/embed?src=${email}&ctz=Asia%2FTokyo`
+  - OAuth認証やAPIキー不要で、API利用制限のあるユーザーでも利用可能
 - タイムゾーン: Asia/Tokyo（デフォルト）
 - ターゲット: Windows/macOS/Linux
 
