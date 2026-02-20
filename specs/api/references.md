@@ -38,7 +38,10 @@ interface CalendarEvent {
   title: string;
   startTime: Date;
   endTime: Date;
+  status: 'needsAction' | 'accepted';
+  isAllDay: boolean;
   videoUrl?: string;
   videoType?: 'meet' | 'zoom' | 'teams';
-} // status: needsAction
+  raw: object;
+}
 ```
