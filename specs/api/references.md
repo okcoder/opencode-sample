@@ -42,6 +42,6 @@ interface CalendarEvent {
   isAllDay: boolean;
   videoUrl?: string;
   videoType?: 'meet' | 'zoom' | 'teams';
-  raw: object;
+  raw: any;
 }
 ```
