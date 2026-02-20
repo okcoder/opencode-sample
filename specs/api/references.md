@@ -40,5 +40,5 @@ interface CalendarEvent {
   endTime: Date;
   videoUrl?: string;
   videoType?: 'meet' | 'zoom' | 'teams';
-}
+} // status: needsAction
 ```
