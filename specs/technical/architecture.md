@@ -39,7 +39,6 @@ graph TB
         
         subgraph Calendar Providers
             GCal[Google Calendar<br/>Adapter]
-            OCal[Outlook Calendar<br/>Adapter]
             Ext[拡張用<br/>Interface]
         end
         
@@ -50,7 +49,6 @@ graph TB
     UI --> Bridge
     Bridge --> Core
     Core --> GCal
-    Core --> OCal
     Core --> Ext
     Core --> Notify
     Core --> Store
@@ -67,7 +65,6 @@ src/
 │   └── types.ts            # 共通型定義
 ├── adapters/
 │   ├── GoogleCalendarAdapter.ts   # Google Calendar 実装
-│   ├── OutlookCalendarAdapter.ts  # Outlook Calendar 実装
 │   └── CalendarAdapter.ts         # Adapter Interface
 ├── services/
 │   ├── NotificationService.ts     # 通知サービス
@@ -109,21 +106,14 @@ interface CalendarAdapter {
 - イベントデータのパース（Google固有のconferenceData解析）
 - Google Meet/Zoom/Teamsリンク抽出
 
-### 3.4 OutlookCalendarAdapter
-
-**責務**:
-- Outlook Calendar 公開URL（embed形式）からのイベント取得
-- イベントデータのパース（Outlook固有のonlineMeeting解析）
-- Teams Meetingリンク抽出
-
-### 3.5 NotificationService
+### 3.4 NotificationService
 
 **責務**:
 - ミーティング開始前通知の管理
 - 重複通知防止ロジック
 - 通知済みイベントIDの永続化管理
 
-### 3.6 StorageService
+### 3.5 StorageService
 
 **責務**:
 - ユーザー設定の保存
@@ -163,5 +153,4 @@ export class YahooCalendarAdapter implements CalendarAdapter {
 | Provider | 状態 | 優先度 |
 |----------|------|:------:|
 | Google Calendar | 実装予定 | P0 |
-| Outlook Calendar | 実装予定 | P1 |
 | iCloud Calendar | 未実装 | P2 |
