@@ -22,19 +22,142 @@
 - **Preload Script**: セキュリティ境界のbridge（contextBridge使用）
 - **Renderer Process**: HTML/CSS/JSによるUI描画
 
-### 2.2 モジュール構成
+### 2.2 アーキテクチャ図
+
+```mermaid
+graph TB
+    subgraph Renderer Process
+        UI[UI Layer<br/>UI描画・ユーザー操作]
+    end
+
+    subgraph Preload
+        Bridge[contextBridge<br/>IPC通信]
+    end
+
+    subgraph Main Process
+        Core[Core Layer<br/>カレンダー抽象化]
+        
+        subgraph Calendar Providers
+            GCal[Google Calendar<br/>Adapter]
+            OCal[Outlook Calendar<br/>Adapter]
+            Ext[拡張用<br/>Interface]
+        end
+        
+        Notify[Notification Service<br/>通知管理]
+        Store[Store Service<br/>永続化]
+    end
+
+    UI --> Bridge
+    Bridge --> Core
+    Core --> GCal
+    Core --> OCal
+    Core --> Ext
+    Core --> Notify
+    Core --> Store
+```
+
+### 2.3 モジュール構成
 
 ```
 src/
-├── main.ts        # メインプロセスエントリ
-├── preload.ts     # Preload script
-└── index.html    # Rendererエントリ
+├── main.ts                 # メインプロセスエントリ
+├── preload.ts              # Preload script
+├── core/
+│   ├── CalendarManager.ts  # カレンダー抽象化管理
+│   └── types.ts            # 共通型定義
+├── adapters/
+│   ├── GoogleCalendarAdapter.ts   # Google Calendar 実装
+│   ├── OutlookCalendarAdapter.ts  # Outlook Calendar 実装
+│   └── CalendarAdapter.ts         # Adapter Interface
+├── services/
+│   ├── NotificationService.ts     # 通知サービス
+│   └── StorageService.ts          # 永続化サービス
+└── renderer/
+    └── index.html         # Rendererエントリ
 ```
 
 ---
 
-## 3. 技術制約
+## 3. モジュール・コンポーネント設計
 
-- Google Calendar API・OAuth認証に依存しないクライアントサイド実装
+### 3.1 CalendarAdapter Interface
+
+```typescript
+interface CalendarAdapter {
+  provider: CalendarProvider;
+  authenticate(): Promise<AuthResult>;
+  fetchEvents(date: Date): Promise<CalendarEvent[]>;
+  getAuthStatus(): AuthStatus;
+}
+```
+
+**責務**: 各カレンダーProviderへの統一アクセスInterface、提供者固有の実装を隠蔽
+
+### 3.2 CalendarManager
+
+**責務**: 
+- 現在アクティブなAdapterの切り替え管理
+- イベント取得エラーハンドリング
+- Adapter間の統一的なデータ変換
+
+### 3.3 GoogleCalendarAdapter
+
+**責務**:
+- Google Calendar API / OAuth認証
+- イベント取得（Google固有のconferenceData解析）
+- Google Meet/Zoom/Teamsリンク抽出
+
+### 3.4 OutlookCalendarAdapter
+
+**責務**:
+- Microsoft Graph API / OAuth認証
+- イベント取得（Outlook固有のonlineMeeting解析）
+- Teams Meetingリンク抽出
+
+### 3.5 NotificationService
+
+**責務**:
+- ミーティング開始前通知の管理
+- 重複通知防止ロジック
+- 通知済みイベントIDの永続化管理
+
+### 3.6 StorageService
+
+**責務**:
+- ユーザー設定の保存
+- 通知済みミーティングIDの永続化
+- Adapter設定の切り替え管理
+
+---
+
+## 4. 技術制約
+
+- カレンダーAPIに依存しないクライアントサイド実装（Webスクレイピング）
 - タイムゾーン: Asia/Tokyo（デフォルト）
 - ターゲット: Windows/macOS/Linux
+
+---
+
+## 5. 拡張性
+
+### 5.1 新規カレンダーProvider追加
+
+新しいカレンダーProviderを追加する場合、`CalendarAdapter` Interfaceを実装したクラスを `adapters/` 配下に追加し、`CalendarManager` に登録する。
+
+```typescript
+// 例: Yahoo Calendar追加時
+import { CalendarAdapter } from './CalendarAdapter';
+
+export class YahooCalendarAdapter implements CalendarAdapter {
+  provider: CalendarProvider = 'yahoo';
+  // ... implement methods
+}
+```
+
+### 5.2 対応予定Provider
+
+| Provider | 状態 | 優先度 |
+|----------|------|:------:|
+| Google Calendar | 実装予定 | P0 |
+| Outlook Calendar | 実装予定 | P1 |
+| iCloud Calendar | 未実装 | P2 |
