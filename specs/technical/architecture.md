@@ -153,4 +153,3 @@ export class YahooCalendarAdapter implements CalendarAdapter {
 | Provider | 状態 | 優先度 |
 |----------|------|:------:|
 | Google Calendar | 実装予定 | P0 |
-| iCloud Calendar | 未実装 | P2 |
