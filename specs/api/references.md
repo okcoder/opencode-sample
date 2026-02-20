@@ -12,30 +12,7 @@
 
 **認証**: Cookie/Session ベース（OAuth不使用）
 
-**レスポンス構造**:
-
-```json
-{
-  "items": [
-    {
-      "id": "string",
-      "summary": "string",
-      "start": { "dateTime": "ISO8601" },
-      "end": { "dateTime": "ISO8601" },
-      "conferenceData": {
-        "entryPoints": [
-          {
-            "entryPointType": "video",
-            "uri": "string",
-            "label": "string"
-          }
-        ]
-      },
-      "hangoutLink": "string"
-    }
-  ]
-}
-```
+**レスポンス構造**: （検証後に追加予定）
 
 ---
 
