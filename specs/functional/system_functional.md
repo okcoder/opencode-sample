@@ -7,9 +7,9 @@
 | 項目 | 内容 |
 |------|------|
 | 製品名 | meet-navi |
-| 一言タグライン | Google Calendar ミーティングアシスタント |
-| コアバリュー | 本日のミーティングを自動取得し、ビデオ会議を識別し、ユーザーに事前に通知 |
-| ターゲットユーザー | Google Calendar を頻繁に使用するビジネスパーソン |
+| 一言タグライン | マルチカレンダー ミーティングアシスタント |
+| コアバリュー | 連携したカレンダーから本日のミーティングを自動取得し、ビデオ会議を識別し、ユーザーに事前に通知 |
+| ターゲットユーザー | カレンダー（Google/Outlook等）を頻繁に使用するビジネスパーソン |
 
 ---
 
@@ -62,6 +62,7 @@
 | Google Meet | conferenceData.entryPoints で entryPointType === 'video' | videoUrl, videoId |
 | Zoom | URL に `zoom.us/j/` を含む | videoUrl |
 | Teams | URL に `teams.microsoft.com` を含む | videoUrl |
+| Outlook Meet | onlineMeetingUrl または onlineMeeting.providers | videoUrl |
 
 **ビデオリンク抽出優先順位**：
 1. conferenceData.entryPoints の video タイプリンク
@@ -101,13 +102,14 @@
 
 ## 4. 設計制約
 
-### 4.1 API無効ユーザー互換
+### 4.1 マルチカレンダー対応
 
-- Google Calendar API や OAuth 認証に依存しない
-- 純粋なクライアントサイドでWebコンテンツ/ネットワークリクエストを取得
-  - ログイン後、Google Calendar Embed画面を表示し、裏で呼び出されたevents APIのレスポンスからイベント情報を取得 
+- CalendarProvider抽象インターフェースによるProvider切り換え対応
+- 対応Provider: Google Calendar, Outlook Calendar
+- 認証方式はProviderごとに異なる（OAuth, Cookie等）
+- クライアントサイド実装
 
-### 4.1 タイムゾーン制約
+### 4.2 タイムゾーン制約
 
 - デフォルトタイムゾーン：Asia/Tokyo（アプリ設定で変更可能）
 - イベント時間はすべてこのタイムゾーンで処理・表示
